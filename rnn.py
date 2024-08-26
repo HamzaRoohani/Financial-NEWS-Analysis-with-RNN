@@ -6,10 +6,10 @@ from nltk.stem import PorterStemmer
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Embedding, Dense, SimpleRNN, Flatten
+from tensorflow.keras.layers import Embedding, Dense, SimpleRNN, Flatten, Dropout
 
 # Downloading dataset of stopwords
-nltk.download('punkt_tab')
+nltk.download('punkt')
 nltk.download('stopwords')
 
 # Loading dataset
@@ -36,11 +36,12 @@ y = df['label']
 # Model creation
 model = Sequential()
 model.add(Embedding(input_dim=len(tokenize.word_index)+1, output_dim=100, input_length=max_len))
-model.add(SimpleRNN(64, activation='relu'))
+model.add(SimpleRNN(128, activation='relu'))
 model.add(Flatten())
+model.add(Dropout(0.3))
+model.add(Dense(64, activation='relu'))
 model.add(Dense(32, activation='relu'))
 model.add(Dense(16, activation='relu'))
-model.add(Dense(8, activation='relu'))
 model.add(Dense(1, activation='sigmoid'))
 model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
 
